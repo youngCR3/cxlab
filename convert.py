@@ -42,7 +42,7 @@ for line in f1:
         # special case: voltage is .69/.48/.32/.4 or situations like line 201
         if len(volt) > 0:
             voltage.add(volt) 
-        if (line[0] == 'L' or line[0] == 'T') and line[1] == ' ':
+        if line[0] == 'L' or line[0] == 'T' or line[0] == 'R':
             if start == 10:
                 # 4-word name, voltage starts from line[20]
                 j = 20
@@ -115,7 +115,7 @@ for line in f1:
                     f2.write(line)
                     continue
          
-        if (line[0] == 'L' or line[0] == 'T') and line[1] == ' ':
+        if line[0] == 'L' or line[0] == 'T' or line[0] == 'R':
             volt = "" 
             j = 0
             if line[start] == '.':
