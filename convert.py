@@ -55,6 +55,7 @@ wordsSet = set(i for i in words)
 if len(words) != len(wordsSet):
     raise Exception("words has duplicate words")
 voltage = list(voltage)
+voltage.sort()
 voltage2Word = {}
 if len(words) < len(voltage):
     print(voltage)
