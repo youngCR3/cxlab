@@ -20,6 +20,8 @@ voltage = set()
 row = 0
 for line in f1:
     row += 1
+    if len(line) >= 0 and line[0] == 'D' and line[1] == 'C':
+        continue
     # if not data row, no need to convert 
     if len(line) == 0 or line[0] == '.':
         pass
@@ -35,13 +37,8 @@ for line in f1:
             # chinese word, voltage starts from line[10]
             start = 10
         j = start
-        volt = ""
-        while isdigit(line[j]):
-            volt += line[j]
-            j += 1
-        # special case: voltage is .69/.48/.32/.4 or situations like line 201
-        if len(volt) > 0:
-            voltage.add(volt) 
+        volt = line[j: j + 4]
+        voltage.add(volt) 
         if line[0] == 'L' or line[0] == 'T' or line[0] == 'R':
             if start == 10:
                 # 4-word name, voltage starts from line[20]
@@ -49,27 +46,18 @@ for line in f1:
             else:
                 # 3-word name, voltage starts from line[21]
                 j = 21
-            volt = ""
-            while isdigit(line[j]):
-                volt += line[j]
-                j += 1
-            if len(volt) > 0:
-                voltage.add(volt)
+            volt = line[j: j + 4]
+            voltage.add(volt)
 
 # Step2: build voltage to chinese word map
 words = "一二三四五六七八九十爱因斯坦牛顿居里夫人柯南道尔图灵吴朝晖特朗普萨拉赫科比阿诺德江博游"
 wordsSet = set(i for i in words)
 if len(words) != len(wordsSet):
     raise Exception("words has duplicate words")
-voltage = [int(i) for i in voltage]
-voltage.sort()
-voltage = [str(i) for i in voltage]
-voltage.append('.69')
-voltage.append('.32')
-voltage.append('.48')
-voltage.append('.4')
+voltage = list(voltage)
 voltage2Word = {}
 if len(words) < len(voltage):
+    print(voltage)
     raise Exception("words length cannot cover all voltages")
 for i in range(len(voltage)):
     voltage2Word[voltage[i]] = words[i]
@@ -84,6 +72,8 @@ f1 = open('ZJ.dat', mode='r', encoding='gbk')
 row = 0
 for line in f1:
     row += 1
+    if len(line) >= 0 and line[0] == 'D' and line[1] == 'C':
+        continue
     # if not data row, no need to convert 
     if len(line) == 0 or line[0] == '.':
         f2.write(line)
@@ -116,16 +106,8 @@ for line in f1:
                     continue
          
         if line[0] == 'L' or line[0] == 'T' or line[0] == 'R':
-            volt = "" 
-            j = 0
-            if line[start] == '.':
-                volt += '.'
-                j = start + 1
-            else:
-                j = start
-            while isdigit(line[j]):
-                volt += line[j]
-                j += 1
+            j = start
+            volt = line[j: j + 4]
             if volt not in voltage2Word:
                 print(row)
                 raise Exception("voltage " + volt + " not in voltage2Word")
@@ -136,13 +118,7 @@ for line in f1:
             else:
                 # 3-word name, voltage starts from line[21]
                 j = 21
-            volt = ''
-            if line[j] == '.':
-                volt += '.'
-                j += 1
-            while isdigit(line[j]):
-                volt += line[j]
-                j += 1
+            volt = line[j: j + 4]
             if volt not in voltage2Word:
                 print(row)
                 raise Exception("voltage " + volt + " not in voltage2Word") 
@@ -152,16 +128,7 @@ for line in f1:
             f2.write(newLine)
             
         else:
-            volt = "" 
-            j = 0
-            if line[start] == '.':
-                volt += '.'
-                j = start + 1
-            else:
-                j = start
-            while isdigit(line[j]):
-                volt += line[j]
-                j += 1
+            volt = line[start: start + 4]
             if volt not in voltage2Word:
                 print(row)
                 raise Exception("voltage " + volt + " not in voltage2Word")
