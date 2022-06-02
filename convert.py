@@ -86,25 +86,9 @@ for line in f1:
         if (isalnum(line[9]) or line[9] == '-' or line[9] == '_'):
             # English word, voltage starts from line[11]
             start = 11
-            if not isdigit(line[11]):
-                # special case: voltage is .69/.32/.48/.4
-                if len(line) > 12 and line[11] == '.' and isdigit(line[12]):
-                    pass
-                # special case: situations like line 201
-                else:
-                    f2.write(line)
-                    continue
         else:
             # chinese word, voltage starts from line[10]
             start = 10
-            if not isdigit(line[10]):
-                # special case: voltage is .69/.32/.48/.4
-                if len(line) > 11 and line[10] == '.' and isdigit(line[11]):
-                    pass
-                # special case: situations like line 201
-                else:
-                    f2.write(line)
-                    continue
          
         if line[0] == 'L' or line[0] == 'T' or line[0] == 'R':
             j = start
